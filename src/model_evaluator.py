@@ -85,6 +85,7 @@ class ModelEvaluator:
         # Adjust batch size based on GPU memory
         if self.device.type == 'cuda':
             # Smaller batch size for GPU to avoid out-of-memory errors
+            print("Running on GPU...")
             if self.batch_size > 128:
                 print(f"Reducing batch size from {self.batch_size} to 128 for GPU processing")
                 self.batch_size = 128

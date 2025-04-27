@@ -60,7 +60,12 @@ Install all necessary dependencies from the `requirements.txt` file:
 >  
 > If you are not using a GPU, you can install the CPU-only versions of these packages instead.
 
-Install the requirements with:
+or just run 
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+
+Install other requirements with:
 
 ```bash
 pip install -r requirements.txt
@@ -70,11 +75,15 @@ pip install -r requirements.txt
 Execute the evaluation pipeline with the following command:
 
 ```bash
+# Go to the code file
+cd src
 # Example of running the model with US locale with full dataset
 python evaluation_pipeline.py --model all-MiniLM-L6-v2 --language us --dataset_size large --batch_size 128
 ```
 
 ```bash
+# Go to the code file
+cd src
 # Example of running the model with all locale and small dataset
 python evaluation_pipeline.py --model all-MiniLM-L6-v2 --dataset_size small --batch_size 128
 ```

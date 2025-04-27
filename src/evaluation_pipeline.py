@@ -49,7 +49,7 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     loaded_data.load_data()
     data_load_time = time.time() - data_load_start
     evaluation_results["performance_metrics"]["data_loading_time"] = data_load_time
-    print(loaded_data.df.head())
+
     # Preprocess data
     preprocess_start = time.time()
     preprocessor = DataPreprocessor(language=language, df=loaded_data.df)
@@ -59,6 +59,8 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     if (language is not None):
         preprocessor.filter_by_locale()
     
+    # Print the first few rows of the preprocessed data
+    print(loaded_data.df.head())
     # Get dataset statistics
     stats = preprocessor.get_dataset_stats()
     evaluation_results["dataset_stats"] = stats

@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 
 class DataPreprocessor:
-    def __init__(self,df, language="us"):
+    def __init__(self,df, language):
         """ 
         Initialize the data preprocessor
         """
