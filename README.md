@@ -12,6 +12,19 @@ Performance was analyzed across different **languages** (e.g., English) and **da
 
 All evaluation code and results are documented in **report_notebook.ipynb**, and the evaluation outputs are saved in the **output** folder.
 
+## Code Structure
+
+The project is organized with the following structure:
+```bash
+src/
+├── data_loader.py          # Handles loading the dataset
+├── data_preprocessor.py    # Preprocesses the raw data for model input
+├── model_evaluator.py      # Contains metrics and evaluation functions
+└── evaluation_pipeline.py  # Main function and evluation pipeline coordinating the evaluation process
+report_notebook.ipynb       # Report notebook to display results
+requirements.txt            # Requirements file
+```
+
 ## Pulling the Code
 To get started with the project, first clone the repository from GitHub:
 > **Note:**  
