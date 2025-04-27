@@ -1,0 +1,41 @@
+{
+    "model_name": "all-MiniLM-L6-v2",
+    "language": "us",
+    "dataset_size": "small",
+    "timestamp": "2025-04-27 19:25:41",
+    "dataset_stats": {
+        "total_samples": 601354,
+        "unique_queries": 29842,
+        "avg_products_per_query": 20.151263320152804,
+        "relevance_distribution": {
+            "1": 0.1686976389946687,
+            "2": 0.04521296939905613,
+            "3": 0.3511924756466241,
+            "4": 0.4348969159596511
+        },
+        "locale_distribution": {
+            "us": 1.0
+        }
+    },
+    "train_metrics": {
+        "NDCG@10": 0.9060322476932031,
+        "Recall@10": 0.6076982370294073,
+        "MRR@10": 0.9241665469749923,
+        "Number of Queries": 20887
+    },
+    "test_metrics": {
+        "NDCG@10": 0.9072085167944093,
+        "Recall@10": 0.6033943609768129,
+        "MRR@10": 0.9244254783618268,
+        "Number of Queries": 8955
+    },
+    "performance_metrics": {
+        "data_loading_time": 8.277383804321289,
+        "preprocessing_time": 16.137487411499023,
+        "model_initialization_time": 4.434845685958862,
+        "test_evaluation_time": 198.79831528663635,
+        "train_evaluation_time": 487.02244663238525,
+        "total_evaluation_time": 714.6754982471466
+    },
+    "visualization_file": "all-MiniLM-L6-v2_us_metrics.png"
+}
