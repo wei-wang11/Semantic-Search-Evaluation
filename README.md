@@ -3,9 +3,9 @@
 ## Introduction
 
 This project evaluates a pre-trained language model for semantic search in an e-commerce setting without any fine-tuning.  
-The selected model, **all-MiniLM-L6-v2** from the Sentence-Transformers library, was chosen for its efficiency and strong performance in retrieval tasks.
+The selected model, [**all-MiniLM-L6-v2**](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) from the Sentence-Transformers library, was chosen for its efficiency and strong performance in retrieval tasks.
 
-The **Shopping Queries Data Set (ESCI)** was used, preprocessed into a [query, title, description, relevance] format, and split into train and test sets.
+The [**Shopping Queries Data Set (ESCI)**](https://github.com/amazon-science/esci-data) was used, preprocessed into a [query, title, description, relevance] format, and split into train and test sets.
 
 The model was evaluated using **NDCG@10**, **Recall@10**, and **MRR@10** metrics.  
 Performance was analyzed across different **languages** (e.g., English) and **dataset sizes** (small vs. full) to better understand the model’s behavior under different data conditions.
@@ -70,10 +70,12 @@ pip install -r requirements.txt
 Execute the evaluation pipeline with the following command:
 
 ```bash
+# Example of running the model with US locale with full dataset
 python evaluation_pipeline.py --model all-MiniLM-L6-v2 --language us --dataset_size large --batch_size 128
 ```
 
 ```bash
+# Example of running the model with all locale and small dataset
 python evaluation_pipeline.py --model all-MiniLM-L6-v2 --dataset_size small --batch_size 128
 ```
 
