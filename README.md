@@ -12,6 +12,16 @@ Performance was analyzed across different **languages** (e.g., English) and **da
 
 All evaluation code and results are documented in **report_notebook.ipynb**, and the evaluation outputs are saved in the **output** folder.
 
+## Pulling the Code
+To get started with the project, first clone the repository from GitHub:
+> **Note:**  
+> This might take a bit longer since the dataset is large (over 1GB)
+
+```bash
+git clone https://github.com/wei-wang11/Semantic-Search-Evaluation.git
+cd Semantic-Search-Evaluation
+```
+
 ## Running the code
 To set up and run the project, follow these steps:
 
