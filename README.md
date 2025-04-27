@@ -96,6 +96,20 @@ This guide provides instructions for running a PyTorch model on a GPU.
     import torch
     print(torch.cuda.is_available())  # Should return True if GPU is available
     ```
+2. **GPU is set to true by default, if not find then will set to cpu**  
+```python
+import torch
+
+# GPU is set to True by default
+use_gpu = True
+
+if use_gpu and torch.cuda.is_available():
+    device = torch.device("cuda")
+    print("Using GPU:", torch.cuda.get_device_name(0))
+else:
+    device = torch.device("cpu")
+    print("Using CPU")
+```
 
 ### Notes
 
