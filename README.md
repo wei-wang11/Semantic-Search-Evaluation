@@ -121,6 +121,10 @@ All evaluation results and outputs will be saved automatically in the `output/` 
 Open and run the `report_notebook.ipynb` notebook to see the results and evaluations.  
 All output files (metrics, evaluation results) are saved in the `output` folder.
 
+At the end of the notebook, I have also provided the code to run the evluation. 
+> **Note:**  
+> Plese make sure you are running the notebook in venv
+
 ## Running the Model on GPU with PyTorch
 
 This guide provides instructions for running a PyTorch model on a GPU.
