@@ -16,16 +16,18 @@ All evaluation code and results are documented in **report_notebook.ipynb**, and
 
 The project is organized with the following structure:
 ```bash
-dataset/                    # Contains ESCI dataset
-src/
-├── data_loader.py          # Handles loading the dataset
-├── data_preprocessor.py    # Preprocesses the raw data for model input
-├── model_evaluator.py      # Contains metrics and evaluation functions
-└── evaluation_pipeline.py  # Main function and evluation pipeline coordinating the evaluation process
-report_notebook.ipynb       # Report notebook to display results
-requirements.txt            # Requirements file
-README.md                   # Instructions on how to run the code
-output/                     # Folder for model evluation result storage
+Semantic-Search-Evaluation/
+├── dataset/                     # Contains ESCI dataset
+├── src/
+│   ├── data_loader.py            # Handles loading the dataset
+│   ├── data_preprocessor.py      # Preprocesses the raw data for model input
+│   ├── model_evaluator.py        # Contains metrics and evaluation functions
+│   └── evaluation_pipeline.py    # Main function and evaluation pipeline coordinating the evaluation process
+├── notebooks/
+│   └── report_notebook.ipynb     # Report notebook to display results
+├── output/                       # Folder for model evaluation result storage
+├── requirements.txt              # Requirements file
+└── README.md                     # Instructions on how to run the code
 ```
 
 ## Pulling the Code
