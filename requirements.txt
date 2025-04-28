@@ -1,0 +1,42 @@
+# Core libraries
+numpy==2.2.5
+pandas==2.2.3
+scikit-learn==1.6.1
+scipy==1.15.2
+tqdm==4.67.1
+regex==2024.11.6
+requests==2.32.3
+packaging==25.0
+python-dateutil==2.9.0.post0
+pytz==2025.2
+pyarrow==19.0.1
+
+# Hugging Face and Transformers
+sentence-transformers==4.1.0
+transformers==4.51.3
+tokenizers==0.21.1
+huggingface-hub==0.30.2
+safetensors==0.5.3
+filelock==3.18.0
+
+# Additional libraries for data visualization and analysis
+matplotlib==3.10.1
+seaborn==0.13.2
+wordcloud==1.9.4
+
+# Jupyter Notebook support
+ipython==9.1.0
+ipykernel==6.29.5
+jupyter-client==8.6.3
+jupyter-core==5.7.2
+nest-asyncio==1.6.0
+traitlets==5.14.3
+tornado==6.4.2
+pyzmq==26.4.0
+
+
+
+# torch for CPU support
+# torch==2.7.0+cu128
+# torchaudio==2.7.0+cu128
+# torchvision==0.22.0+cu128
