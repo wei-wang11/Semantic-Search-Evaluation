@@ -39,7 +39,5 @@ pyzmq==26.4.0
 
 
 
-# torch for CPU support
+# torch for GPU support
 # torch==2.7.0+cu128
-# torchaudio==2.7.0+cu128
-# torchvision==0.22.0+cu128

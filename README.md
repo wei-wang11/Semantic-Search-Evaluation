@@ -72,15 +72,13 @@ Install all necessary dependencies from the `requirements.txt` file:
 > For example, for CUDA 12.8, use:
 > ```
 > torch==2.7.0+cu128
-> torchaudio==2.7.0+cu128
-> torchvision==0.22.0+cu128
 > ```
 >  
 > If you are not using a GPU, you can install the CPU-only versions of these packages instead.
 
 or just run 
 ```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+pip install torch --index-url https://download.pytorch.org/whl/cu128
 ```
 
 Install other requirements with:
