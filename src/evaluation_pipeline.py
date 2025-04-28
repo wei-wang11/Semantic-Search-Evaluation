@@ -14,7 +14,9 @@ from data_preprocessor import DataPreprocessor
 from model_evaluator import ModelEvaluator
 
 def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=True, 
-                  split_column='split', batch_size=128, save_results=True):
+                  split_column='split', batch_size=128, save_results=True,
+                  example_path="../dataset/shopping_queries_dataset_examples.parquet",
+                  product_path="../dataset/shopping_queries_dataset_products.parquet"):
     """
     Run the complete evaluation pipeline with comprehensive metrics tracking
     """
@@ -42,8 +44,8 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     # Load data
     data_load_start = time.time()
     loaded_data = DataLoader(
-        example_path="../dataset/shopping_queries_dataset_examples.parquet",
-        products_path="../dataset/shopping_queries_dataset_products.parquet",
+        example_path=example_path,
+        products_path=product_path,
         small_version=small_version
     )
     loaded_data.load_data()
@@ -60,7 +62,7 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
         preprocessor.filter_by_locale()
     
     # Print the first few rows of the preprocessed data
-    print(loaded_data.df.head())
+    print(preprocessor.df.head())
     # Get dataset statistics
     stats = preprocessor.get_dataset_stats()
     evaluation_results["dataset_stats"] = stats
@@ -85,8 +87,20 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     model_init_time = time.time() - model_init_start
     evaluation_results["performance_metrics"]["model_initialization_time"] = model_init_time
     
+    # Evaluate train model
+    print(f"\nEvaluating model on {language if language else 'all languages'} train set...")
+    print(train_df.head())
+    train_eval_start = time.time()
+    train_results = evaluator.evaluate(train_df, threshold=3.0)  # Consider 'E' and 'S' as relevant (4 and 3)
+    train_eval_time = time.time() - train_eval_start
+    evaluation_results["performance_metrics"]["train_evaluation_time"] = train_eval_time
+    evaluation_results["train_metrics"] = train_results
+    
+    evaluator.print_results(train_results, language=language, small_version=small_version)
+
     # Evaluate test model
     print(f"Evaluating model on {language if language else 'all languages'} test set...")
+    print(test_df.head())
     test_eval_start = time.time()
     test_results = evaluator.evaluate(test_df, threshold=3.0)  # Consider 'E' and 'S' as relevant (4 and 3)
     test_eval_time = time.time() - test_eval_start
@@ -95,15 +109,6 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     
     evaluator.print_results(test_results, language=language, small_version=small_version)
     
-    # Evaluate train model
-    print(f"\nEvaluating model on {language if language else 'all languages'} train set...")
-    train_eval_start = time.time()
-    train_results = evaluator.evaluate(train_df, threshold=3.0)  # Consider 'E' and 'S' as relevant (4 and 3)
-    train_eval_time = time.time() - train_eval_start
-    evaluation_results["performance_metrics"]["train_evaluation_time"] = train_eval_time
-    evaluation_results["train_metrics"] = train_results
-    
-    evaluator.print_results(train_results, language=language, small_version=small_version)
     
     # Calculate total time
     total_time = time.time() - start_time
@@ -194,6 +199,10 @@ def main():
                      help='Column name for train/test split (default: "split")')
     parser.add_argument('--batch_size', type=int, default=128,
                      help='Batch size for evaluation (default: 128)')
+    parser.add_argument('--example_path', type=str, default="../dataset/shopping_queries_dataset_examples.parquet",
+                     help='Path to the examples dataset (default: ../dataset/shopping_queries_dataset_examples.parquet)')
+    parser.add_argument('--product_path', type=str, default="../dataset/shopping_queries_dataset_products.parquet",
+                     help='Path to the products dataset (default: ../dataset/shopping_queries_dataset_products.parquet)')
     
     args = parser.parse_args()
     
@@ -207,7 +216,9 @@ def main():
         small_version=True if args.dataset_size == "small" else False,
         split_column=args.split_column,
         batch_size=args.batch_size,
-        save_results=True
+        save_results=True,
+        example_path=args.example_path,
+        product_path=args.product_path
     )
     
     # Print the results

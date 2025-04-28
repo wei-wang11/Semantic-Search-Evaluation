@@ -118,6 +118,7 @@ class DataPreprocessor:
             raise ValueError("'product_locale' column not found in dataset")
             
         filtered_df = self.df[self.df['product_locale'] == self.language]
+        
         print(f"Filtered dataset to {len(filtered_df)} rows with locale '{self.language}'")
         
         # Set the filtered DataFrame as the current DataFrame

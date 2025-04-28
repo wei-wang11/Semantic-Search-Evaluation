@@ -93,23 +93,26 @@ pip install -r requirements.txt
 Execute the evaluation pipeline with the following command:
 
 ```bash
-# Go to the code file
-cd src
-# Example of running the model with US locale with full dataset
-python evaluation_pipeline.py --model all-MiniLM-L6-v2 --language us --dataset_size large --batch_size 128
+# Example of running the model with US locale with small dataset
+python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --language us --dataset_size small --batch_size 128 --example_path dataset/shopping_queries_dataset_examples.parquet --product_path dataset/shopping_queries_dataset_products.parquet
 ```
 
 ```bash
-# Go to the code file
-cd src
-# Example of running the model with all locale and small dataset
-python evaluation_pipeline.py --model all-MiniLM-L6-v2 --dataset_size small --batch_size 128
+# Example of running the model with JP locale with small dataset
+python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --language jp --dataset_size small --batch_size 128 --example_path dataset/shopping_queries_dataset_examples.parquet --product_path dataset/shopping_queries_dataset_products.parquet
+```
+
+```bash
+# Example of running the model with all locale with large dataset
+python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --dataset_size large --batch_size 128 --example_path dataset/shopping_queries_dataset_examples.parquet --product_path dataset/shopping_queries_dataset_products.parquet
 ```
 
 - `--model`: Name of the pre-trained model (from Sentence-Transformers).
 - `--language`: Target language/locale (`us`, `jp`, `es`).
 - `--dataset_size`: Dataset version to use (`small` or `large`).
 - `--batch_size`: Batch size for encoding during evaluation.
+- `--example_path`: File path for example dataset.
+- `--product_path`: File path for product dataset.
 
 All evaluation results and outputs will be saved automatically in the `output/` folder.
 
