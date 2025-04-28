@@ -147,12 +147,12 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
         ax.legend()
         
         # Save the visualization
-        fig_filename = f"../output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_metrics.png"
+        fig_filename = f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_metrics.png"
         plt.savefig(fig_filename)
         evaluation_results["visualization_file"] = fig_filename
         
         # Save results to JSON file
-        json_filename = f"../output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_results.json"
+        json_filename = f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_results.json"
         with open(json_filename, 'w') as f:
             # Convert sets to lists for JSON serialization if needed
             results_json = {k: (list(v) if isinstance(v, set) else v) 
@@ -175,7 +175,7 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
             'Total Time (s)': total_time
         }
         
-        pd.DataFrame([csv_data]).to_csv(f"../output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_results.csv", index=False)
+        pd.DataFrame([csv_data]).to_csv(f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_results.csv", index=False)
         
         print(f"Results saved to {json_filename} and {fig_filename}")
     
