@@ -8,7 +8,7 @@ The selected model, [**all-MiniLM-L6-v2**](https://huggingface.co/sentence-trans
 The [**Shopping Queries Data Set (ESCI)**](https://github.com/amazon-science/esci-data) was used, preprocessed into a [query, title, description, relevance] format, and split into train and test sets.
 
 The model was evaluated using **NDCG@10**, **Recall@10**, and **MRR@10** metrics.  
-Performance was analyzed across different **languages** (e.g., English) and **dataset sizes** (small vs. full) to better understand the model’s behavior under different data conditions.
+Performance was analyzed across different **languages** (e.g., English), **dataset sizes** (small vs. full) and **product sizes per query** (query's own product size or 100 (query's own product + randomly selected accross all dataset)) to better understand the model’s behavior under different data conditions.
 
 All evaluation code and results are documented in **report_notebook.ipynb**, and the evaluation outputs are saved in the **output** folder.
 
@@ -96,6 +96,11 @@ python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --language us --datas
 ```
 
 ```bash
+# Example of running the model with JP locale with small dataset with 100 products per query
+python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --language jp --dataset_size small --batch_size 2048 --example_path dataset/shopping_queries_dataset_examples.parquet --product_path dataset/shopping_queries_dataset_products.parquet --product_size 100
+```
+
+```bash
 # Example of running the model with JP locale with small dataset
 python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --language jp --dataset_size small --batch_size 128 --example_path dataset/shopping_queries_dataset_examples.parquet --product_path dataset/shopping_queries_dataset_products.parquet
 ```
@@ -111,6 +116,7 @@ python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --dataset_size large 
 - `--batch_size`: Batch size for encoding during evaluation.
 - `--example_path`: File path for example dataset.
 - `--product_path`: File path for product dataset.
+- `--product_size `: Product size used to evaluate each query.
 
 All evaluation results and outputs will be saved automatically in the `output/` folder.
 

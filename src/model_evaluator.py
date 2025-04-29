@@ -3,6 +3,7 @@ from tqdm import tqdm
 from sentence_transformers import SentenceTransformer, util
 import torch
 from sklearn.metrics import ndcg_score
+import random
 
 class ModelEvaluator:
     def __init__(self, model_name="all-MiniLM-L6-v2", use_gpu=True, batch_size=128):
@@ -74,93 +75,112 @@ class ModelEvaluator:
                 return 1.0 / (i)
         
         return 0.0
-    
-    def evaluate(self, test_df, threshold=3.0, k=10):
+
+    def evaluate(self, test_df, threshold=3.0, k=10, product_size=None):
+        """ Retures dict: Evaluation metrics (NDCG@k, Recall@k, MRR@k, Number of Queries).
+        Evaluate the model on the chosen dataset.
         """
-        Evaluate the model on the test set
-        """
+        print(f"Evluating with {product_size} products per query")
         # Group the test data by query
         query_groups = test_df.groupby('query')
 
-        # Adjust batch size based on GPU memory
-        if self.device.type == 'cuda':
-            # Smaller batch size for GPU to avoid out-of-memory errors
-            print("Running on GPU...")
-            if self.batch_size > 128:
-                print(f"Reducing batch size from {self.batch_size} to 128 for GPU processing")
-                self.batch_size = 128
-        
-        # Track metrics for each query
+        # Prepare all products (needed for random sampling if product_size is used)
+        all_products = test_df[['combined_text', 'relevance']]
+
+        # Track metrics
         ndcg_scores = []
         recall_scores = []
         mrr_scores = []
-        
-        # Process queries in batches
+
         unique_queries = list(query_groups.groups.keys())
-        
+
+        # Adjust batch size based on GPU memory
+        if self.device.type == 'cuda':
+            print("Running on GPU...")
+            # if self.batch_size > 128:
+            #     print(f"Reducing batch size from {self.batch_size} to 128 for GPU processing")
+            #     self.batch_size = 128
+
+        # Process queries
         for i in tqdm(range(0, len(unique_queries), self.batch_size), desc="Evaluating queries"):
             batch_queries = unique_queries[i:i+self.batch_size]
             
-            # Collect all products for the batch queries
             batch_data = []
             for query in batch_queries:
                 query_df = query_groups.get_group(query)
                 query_products = query_df['combined_text'].tolist()
                 query_relevances = query_df['relevance'].tolist()
-                batch_data.append((query, query_products, query_relevances))
-            
-            # Encode all unique queries in the batch
-            query_texts = [item[0] for item in batch_data]
 
+                # If product_size is specified, pad products
+                if product_size is not None:
+                    if len(query_products) >= product_size:
+                        indices = np.random.choice(len(query_products), size=product_size, replace=False)
+                        selected_products = [query_products[j] for j in indices]
+                        selected_relevances = [query_relevances[j] for j in indices]
+                    else:
+                        num_random = product_size - len(query_products)
+                        candidate_random_pool = all_products[~all_products.index.isin(query_df.index)]
+                        random_samples = candidate_random_pool.sample(n=num_random, replace=False)
+
+                        selected_products = query_products + random_samples['combined_text'].tolist()
+                        selected_relevances = query_relevances + [1.0] * num_random  # Random products are irrelevant
+                else:
+                    selected_products = query_products
+                    selected_relevances = query_relevances
+
+                batch_data.append((query, selected_products, selected_relevances))
+
+            # Encode batch queries
+            query_texts = [item[0] for item in batch_data]
             query_embeddings = self.model.encode(
                 query_texts, 
                 convert_to_tensor=True, 
-                show_progress_bar=False,
-                device=self.device
+                device=self.device,
+                show_progress_bar=False
             )
-            
-            # Process each query in the batch
+
+            # Process each query in batch
             for idx, (query, products, relevances) in enumerate(batch_data):
-                # Skip if no products
                 if len(products) == 0:
                     continue
-                
+
                 # Encode products
-                product_embeddings = self.model.encode(products, convert_to_tensor=True, show_progress_bar=False
-                ,device=self.device)
-                
-                # Calculate similarities
-                q_embedding = query_embeddings[idx].unsqueeze(0)  # Add batch dimension
+                product_embeddings = self.model.encode(
+                    products, 
+                    convert_to_tensor=True, 
+                    device=self.device,
+                    show_progress_bar=False
+                )
+
+                # Compute similarities
+                q_embedding = query_embeddings[idx].unsqueeze(0)
                 similarities = util.pytorch_cos_sim(q_embedding, product_embeddings)[0].cpu().numpy()
-                
+
                 # Sort products by similarity
                 sorted_indices = np.argsort(-similarities)
-                
-                # Get sorted relevance scores
-                sorted_relevances = [relevances[idx] for idx in sorted_indices]
-                
-                # Calculate NDCG@k
+                sorted_relevances = [relevances[j] for j in sorted_indices]
+
+                # Calculate metrics
                 ndcg = self.calculate_ndcg(sorted_relevances, k)
                 ndcg_scores.append(ndcg)
-                
-                # Calculate Recall@k and MRR@k
-                relevant_indices = {i for i, rel in enumerate(relevances) if rel >= threshold}
+
+                relevant_indices = {j for j, rel in enumerate(relevances) if rel >= threshold}
                 retrieved_indices = sorted_indices.tolist()
-                
+
                 recall = self.calculate_recall_at_k(relevant_indices, retrieved_indices, k)
                 recall_scores.append(recall)
-                
+
                 mrr = self.calculate_mrr(retrieved_indices, relevant_indices, k)
                 mrr_scores.append(mrr)
+
                 if self.device.type == 'cuda':
                     torch.cuda.empty_cache()
-        
-        # Calculate average metrics
+
+        # Aggregate final results
         avg_ndcg = np.mean(ndcg_scores)
         avg_recall = np.mean(recall_scores)
         avg_mrr = np.mean(mrr_scores)
-        
-        # Return metrics
+
         return {
             'NDCG@10': avg_ndcg,
             'Recall@10': avg_recall,

@@ -16,7 +16,8 @@ from model_evaluator import ModelEvaluator
 def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=True, 
                   split_column='split', batch_size=128, save_results=True,
                   example_path="../dataset/shopping_queries_dataset_examples.parquet",
-                  product_path="../dataset/shopping_queries_dataset_products.parquet"):
+                  product_path="../dataset/shopping_queries_dataset_products.parquet",
+                  product_size=None):
     """
     Run the complete evaluation pipeline with comprehensive metrics tracking
     """
@@ -79,7 +80,7 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     train_df, test_df = preprocessor.split_data(split_column)
     preprocess_time = time.time() - preprocess_start
     evaluation_results["performance_metrics"]["preprocessing_time"] = preprocess_time
-    
+    product_count = product_size if product_size is not None else ""
     # Initialize model evaluator
     print(f"\nInitializing model evaluator with model: {model_name}")
     model_init_start = time.time()
@@ -91,7 +92,7 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     print(f"\nEvaluating model on {language if language else 'all languages'} train set...")
     print(train_df.head())
     train_eval_start = time.time()
-    train_results = evaluator.evaluate(train_df, threshold=3.0)  # Consider 'E' and 'S' as relevant (4 and 3)
+    train_results = evaluator.evaluate(train_df, threshold=3.0,product_size=product_size)  # Consider 'E' and 'S' as relevant (4 and 3)
     train_eval_time = time.time() - train_eval_start
     evaluation_results["performance_metrics"]["train_evaluation_time"] = train_eval_time
     evaluation_results["train_metrics"] = train_results
@@ -102,7 +103,7 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     print(f"Evaluating model on {language if language else 'all languages'} test set...")
     print(test_df.head())
     test_eval_start = time.time()
-    test_results = evaluator.evaluate(test_df, threshold=3.0)  # Consider 'E' and 'S' as relevant (4 and 3)
+    test_results = evaluator.evaluate(test_df=test_df, threshold=3.0,product_size=product_size)  # Consider 'E' and 'S' as relevant (4 and 3)
     test_eval_time = time.time() - test_eval_start
     evaluation_results["performance_metrics"]["test_evaluation_time"] = test_eval_time
     evaluation_results["test_metrics"] = test_results
@@ -147,12 +148,12 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
         ax.legend()
         
         # Save the visualization
-        fig_filename = f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_metrics.png"
+        fig_filename = f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_{product_count}_metrics.png"
         plt.savefig(fig_filename)
         evaluation_results["visualization_file"] = fig_filename
         
         # Save results to JSON file
-        json_filename = f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_results.json"
+        json_filename = f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_{product_count}_results.json"
         with open(json_filename, 'w') as f:
             # Convert sets to lists for JSON serialization if needed
             results_json = {k: (list(v) if isinstance(v, set) else v) 
@@ -175,7 +176,7 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
             'Total Time (s)': total_time
         }
         
-        pd.DataFrame([csv_data]).to_csv(f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_results.csv", index=False)
+        pd.DataFrame([csv_data]).to_csv(f"output/{model_name}_{language if language else 'all'}_{'small' if small_version else 'large'}_{product_count}_results.csv", index=False)
         
         print(f"Results saved to {json_filename} and {fig_filename}")
     
@@ -203,6 +204,8 @@ def main():
                      help='Path to the examples dataset (default: ../dataset/shopping_queries_dataset_examples.parquet)')
     parser.add_argument('--product_path', type=str, default="../dataset/shopping_queries_dataset_products.parquet",
                      help='Path to the products dataset (default: ../dataset/shopping_queries_dataset_products.parquet)')
+    parser.add_argument('--product_size', type=int, default=None,
+                     help='Size of the product dataset to use (default: None for only the query products itself without any additional products)')
     
     args = parser.parse_args()
     
@@ -218,7 +221,8 @@ def main():
         batch_size=args.batch_size,
         save_results=True,
         example_path=args.example_path,
-        product_path=args.product_path
+        product_path=args.product_path,
+        product_size=args.product_size
     )
     
     # Print the results
