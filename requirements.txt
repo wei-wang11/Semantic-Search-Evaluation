@@ -34,7 +34,7 @@ jupyter-client==8.6.3
 jupyter-core==5.7.2
 nest-asyncio==1.6.0
 traitlets==5.14.3
-tornado==6.4.2
+tornado==6.5.1
 pyzmq==26.4.0
 
 
