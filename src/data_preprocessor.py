@@ -75,6 +75,34 @@ class DataPreprocessor:
         print(f"Test set size: {len(df_test)} rows, {df_test['query'].nunique()} unique queries")
         return df_train, df_test
 
+    def split_data_random(self,test_size=0.2,random_state=42):
+        """ Return train and test dataframes
+
+        Splits the DataFrame into train, and test sets based on a random split.
+        """
+        if self.df is None:
+            raise ValueError("Dataset not loaded. Call load_data() first.")
+        
+        # Check if the DataFrame is empty
+        if self.df.empty:
+            raise ValueError("DataFrame is empty. Cannot split data.")
+        
+        # Check if the DataFrame has the required columns
+        required_columns = ['query', 'title', 'description', 'relevance']
+        for col in required_columns:
+            if col not in self.df.columns:
+                raise ValueError(f"Column '{col}' not found in DataFrame. Cannot split data.")
+        
+        # Split the data into train and test sets
+        df_train = self.df.sample(frac=1-test_size, random_state=random_state)
+        df_test = self.df.drop(df_train.index)
+
+        print(f"Train set size: {len(df_train)} rows, {df_train['query'].nunique()} unique queries")
+        print(f"Test set size: {len(df_test)} rows, {df_test['query'].nunique()} unique queries")
+        
+        return df_train, df_test
+
+
     # Clean html tags for text analysis
     def remove_html_tags(self,text):
         """ Return a string with HTML tags removed"""
