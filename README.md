@@ -2,8 +2,16 @@
 
 ## Introduction
 
-This project evaluates a pre-trained language model for semantic search in an e-commerce setting without any fine-tuning.  
-The selected model, [**all-MiniLM-L6-v2**](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) from the Sentence-Transformers library, was chosen for its efficiency and strong performance in retrieval tasks.
+This project evaluates pre-trained language models for semantic search in an e-commerce setting without any fine-tuning. The system supports both single-model evaluation and multi-model comparison to identify the best performing model for retrieval tasks.
+
+The default model, [**all-MiniLM-L6-v2**](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) from the Sentence-Transformers library, was chosen for its efficiency and strong performance in retrieval tasks. However, the framework allows for comprehensive evaluation and comparison of multiple sentence transformer models, including:
+
+- **all-MiniLM-L6-v2**: Lightweight and efficient for fast inference
+- **all-mpnet-base-v2**: Higher accuracy with moderate computational cost
+- **paraphrase-MiniLM-L6-v2**: Optimized for paraphrase detection and semantic similarity
+- **distiluse-base-multilingual-cased**: Multilingual support for cross-language retrieval
+
+The multi-model evaluation feature enables comparison of different models' performance on the same dataset, providing insights into trade-offs between accuracy, speed, and resource consumption across various sentence transformer architectures.
 
 The [**Shopping Queries Data Set (ESCI)**](https://github.com/amazon-science/esci-data) was used, preprocessed into a [query, title, description, relevance] format, and split into train and test sets.
 
