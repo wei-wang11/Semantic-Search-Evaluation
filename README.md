@@ -122,7 +122,7 @@ python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --dataset_size large 
 # Example of runing a multi-model evaluation with 10% of small version dataset for all languages with 100 products per query
 python src\evaluation_pipeline.py --models "all-MiniLM-L6-v2" "paraphrase-MiniLM-L6-v2" --dataset_size small --batch_size 1024 --dataset_size_ratio 0.1 --product_size 100 --example_path dataset/shopping_queries_dataset_examples.parquet --product_path dataset/shopping_queries_dataset_products.parquet
 ```
-
+- `--models`: Names of multiple pre-trained models (from Sentence-Transformers). (e.g. --models "all-MiniLM-L6-v2" "paraphrase-MiniLM-L6-v2")
 - `--model`: Name of the pre-trained model (from Sentence-Transformers).
 - `--language`: Target language/locale (`us`, `jp`, `es`).
 - `--dataset_size`: Dataset version to use (`small` or `large`).
