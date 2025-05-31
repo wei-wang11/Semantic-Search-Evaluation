@@ -20,7 +20,7 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
                   split_column='split', batch_size=128, save_results=True,
                   example_path="../dataset/shopping_queries_dataset_examples.parquet",
                   product_path="../dataset/shopping_queries_dataset_products.parquet",
-                  product_size=None):
+                  product_size=None,dataset_size_ratio=1.0):
     """
     Run the complete evaluation pipeline with comprehensive metrics tracking
     """
@@ -50,7 +50,8 @@ def run_evaluation(language=None, model_name="all-MiniLM-L6-v2", small_version=T
     loaded_data = DataLoader(
         example_path=example_path,
         products_path=product_path,
-        small_version=small_version
+        small_version=small_version,
+        dataset_size_ratio=dataset_size_ratio
     )
     loaded_data.load_data()
     data_load_time = time.time() - data_load_start
@@ -489,6 +490,8 @@ def main():
                       help='Path to the products dataset')
     parser.add_argument('--product_size', type=int, default=None,
                       help='Size of the product dataset to use (default: None)')
+    parser.add_argument('--dataset_size_ratio', type=float, default=1.0,
+                      help='Size of the dataset wanted to train and test')
     
     args = parser.parse_args()
     
@@ -507,7 +510,8 @@ def main():
         'save_results': True,
         'example_path': args.example_path,
         'product_path': args.product_path,
-        'product_size': args.product_size
+        'product_size': args.product_size,
+        'dataset_size_ratio': args.dataset_size_ratio
     }
     
     # Run evaluation
