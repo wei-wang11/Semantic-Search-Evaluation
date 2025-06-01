@@ -123,13 +123,14 @@ python src\evaluation_pipeline.py --model all-MiniLM-L6-v2 --dataset_size large 
 python src\evaluation_pipeline.py --models "all-MiniLM-L6-v2" "paraphrase-MiniLM-L6-v2" --dataset_size small --batch_size 1024 --dataset_size_ratio 0.1 --product_size 100 --example_path dataset/shopping_queries_dataset_examples.parquet --product_path dataset/shopping_queries_dataset_products.parquet
 ```
 - `--models`: Names of multiple pre-trained models (from Sentence-Transformers). (e.g. --models "all-MiniLM-L6-v2" "paraphrase-MiniLM-L6-v2")
-- `--model`: Name of the pre-trained model (from Sentence-Transformers).
+- or `--model`: Name of the pre-trained model (from Sentence-Transformers).
 - `--language`: Target language/locale (`us`, `jp`, `es`).
 - `--dataset_size`: Dataset version to use (`small` or `large`).
 - `--batch_size`: Batch size for encoding during evaluation.
 - `--example_path`: File path for example dataset.
 - `--product_path`: File path for product dataset.
 - `--product_size `: Product size used to evaluate each query.
+- `--dataset_size_ratio`: The size of the dataset used to evaluate
 
 All evaluation results and outputs will be saved automatically in the `output/` folder.
 
